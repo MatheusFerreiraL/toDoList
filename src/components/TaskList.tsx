@@ -10,12 +10,22 @@ interface Task {
   isComplete: boolean;
 }
 
-export function TaskList() {
+export function TaskList(props : Task) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    if(newTaskTitle === ''){
+      return; 
+    }
+    props = {
+      id: Math.random(), //não é a melhor forma de fazer isso!
+      title: newTaskTitle,
+      isComplete: false
+    };
+    setTasks(oldState => [...oldState, props]);
+    setNewTaskTitle(''); //resta o input
   }
 
   function handleToggleTaskCompletion(id: number) {
@@ -24,17 +34,19 @@ export function TaskList() {
 
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
+    const taskFilter = tasks.filter(task => task.id != id); //filtra as tasks exceto a que queremos remover
+    setTasks(taskFilter); //passamos para a `task` todo o "resto". 
   }
 
   return (
     <section className="task-list container">
       <header>
-        <h2>Minhas tasks</h2>
+        <h2>Minhas tarefas</h2>
 
         <div className="input-group">
           <input 
             type="text" 
-            placeholder="Adicionar novo todo" 
+            placeholder="Adicionar nova tarefa" 
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
