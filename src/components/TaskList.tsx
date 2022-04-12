@@ -24,14 +24,19 @@ export function TaskList(props : Task) {
       title: newTaskTitle,
       isComplete: false
     };
-    setTasks(oldState => [...oldState, props]);
-    setNewTaskTitle(''); //resta o input
+    setTasks(oldState => [...oldState, props]); //`[...,]` spread operator
+    setNewTaskTitle(''); //reseta o input
   }
 
   function handleToggleTaskCompletion(id: number) {
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    const completedTask = tasks.map(task => task.id === id ? { //nesse momento entramos no objeto específico (já que task.id === id)
+      ... task, //spread operator para manter o  resto do objeto idêntico
+      isComplete: !task.isComplete
+    } : task) //o `:` devolve o task justamente como estava pois, se não achar id igual não temos que mudar nada
+    setTasks(completedTask);
   }
-
+  
   function handleRemoveTask(id: number) {
     // Remova uma task da listagem pelo ID
     const taskFilter = tasks.filter(task => task.id != id); //filtra as tasks exceto a que queremos remover
